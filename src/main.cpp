@@ -22,6 +22,11 @@ int Fp = 96;
 int G = 99;
 int Gp = 101;
 
+int delayTime = 20;
+
+bool dropMode = false;
+int dropModeTime = 100;
+
 
 int timeFromLastNote = 0;
 int keyNote;
@@ -74,10 +79,15 @@ void setup() {
 }
 
 void loop() {
+    if (dropMode && timeFromLastNote >= dropModeTime) {
+        note = 0;
+    }
     key = 0;
     timeFromLastNote++;
 
     if (Serial.available() > 0) {
+        ESC.write(0);
+        delay(delayTime);
         key = Serial.read();
     }
 
@@ -88,12 +98,18 @@ void loop() {
     }
     if (key == '1') {
         note = 0;
+        timeFromLastNote = 0;
+    } else if (key == 'p') {
+        dropMode = !dropMode;
     } else if (key == '0') {
         note = 180;
+        timeFromLastNote = 0;
     } else if (key == '2' && note > 0) {
         note--;
+        timeFromLastNote = 0;
     } else if (key == '9' && note < 180) {
         note++;
+        timeFromLastNote = 0;
     }
 
     if(note <= 180 && note >= 0) {
