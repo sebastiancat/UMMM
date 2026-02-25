@@ -79,8 +79,8 @@ void setup() {
 }
 
 void loop() {
-    if (dropMode && timeFromLastNote >= dropModeTime) {
-        note = 0;
+    if (dropMode && timeFromLastNote % 5 == 0 && note > 0) {
+        note--;
     }
     key = 0;
     timeFromLastNote++;
